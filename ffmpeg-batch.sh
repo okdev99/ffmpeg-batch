@@ -1,8 +1,24 @@
 #!/bin/bash
-set -e
 
-#Todo:
-#	1. Make it possible for "*" to be valid input destination extension. The intented behaviour should be to use the same extension for the destination as is in the original file.
+#	ffmpeg-batch is bash script for ffmpeg batch jobs, with some added functionality.
+#   Copyright (C) 2024  Otto Kuusniemi
+#
+#   This program is free software: you can redistribute it and/or modify
+# 	it under the terms of the GNU General Public License as published by
+#   the Free Software Foundation, either version 3 of the License, or
+#   (at your option) any later version.
+#
+#   This program is distributed in the hope that it will be useful,
+#   but WITHOUT ANY WARRANTY; without even the implied warranty of
+#   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#   GNU General Public License for more details.
+#
+#   You should have received a copy of the GNU General Public License
+#   along with this program.  If not, see <https://www.gnu.org/licenses/>.
+#
+#	Developer contact: okdev99@gmail.com
+
+set -e
 
 SIZE_COMPARISON=false
 SAME_EXTENSION=false
@@ -61,16 +77,12 @@ fi
 
 for filename in $srcDir; do
 
+	if $ALL_FILES_IN_SOURCE && [[ ! $(echo "${FFMPEG_SUPPORTED_EXTENSIONS[@]}" | grep -Fw "${filename##*.}") ]]; then
+		continue
+	fi
+
 	basePath=${filename%.*}
 	baseName=${basePath##*/}
-
-	if $ALL_FILES_IN_SOURCE; then
-		for i in "${FFMPEG_SUPPORTED_EXTENSIONS[@]}"; do
-			if [[ ! $i == ${filename##*.} ]]; then
-				continue
-			fi
-		done
-	fi
 
 	if $SAME_EXTENSION; then
 		destExt=${filename##*.}
