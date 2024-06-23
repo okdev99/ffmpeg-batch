@@ -27,7 +27,7 @@ FFMPEG_SUPPORTED_EXTENSIONS=("str" "aa" "aac" "aax" "ac3" "acm" "adf" "adp" "dtk
 
 while getopts ":hsi:o:" opt; do
 	case $opt in
-		h)	echo "Usage: $0 [-h] [-s] [-i] [-o] srcExt destExt srcDir destDir"
+		h)	echo "Usage: $0 [-h] [-s] [-i args] [-o args] srcExt destExt srcDir destDir"
 			echo ""
 			echo "  -h		show this help text"
 			echo "  -s		compare the size difference of the original and formatted file and delete the larger file"
