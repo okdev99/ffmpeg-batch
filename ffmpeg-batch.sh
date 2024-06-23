@@ -38,7 +38,7 @@ while getopts ":hsi:o:" opt; do
 			echo "  srcDir	source directory"
 			echo "  destDir	destination directory"
 			echo ""
-			echo "To use wildcard '*' as an extension, you either need to escape it '\*' or use quotes. Using the '*' wildcard as the output extension, will make the program use the same extension as is in the original file."
+			echo "To use wildcard * as an extension, you either need to escape it \* or use quotes. Using the * wildcard as the output extension, will make the program use the same extension as is in the original file."
 			exit 0
 			;;
 		s)	SIZE_COMPARISON=true
