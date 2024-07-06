@@ -23,4 +23,5 @@ Usage: ffmpeg-batch [-h] [-s] [-i args] [-o args] srcExt destExt srcDir destDir
   destDir	destination directory
 
 To use wildcard * as an extension, you either need to escape it \* or use quotes. Using the * wildcard as the output extension, will make the program use the same extension as is in the original file.
+When exiting the ffmpeg conversion and the -s option is set then use keyboard interrupt (ctrl + c) to stop ffmpeg, since otherwise the script won't recognise that ffmpeg exited prematurely and comparison should not happen.
 ```
