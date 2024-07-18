@@ -18,40 +18,33 @@
 #
 #	Developer contact: okdev99@gmail.com
 
-#TODO: While the option s is set, if user exits ffmpeg process with q (atleast), then the scripts comparison section goes through, which is unwanted behaviour.
-# Intented behaviour is to stop the script when ffmpeg exits without fully converting the video. Check ffmpeg docs to know what kind of exit code does exiting with q create.
-#
-# Add a new option -m that moves all specified files to the output folder at the end
-
-set -e
-
-SIZE_COMPARISON=false
-SAME_EXTENSION=false
-ALL_FILES_IN_SOURCE=false
-MOVE_ALL_FILES=false
-FFMPEG_SUPPORTED_EXTENSIONS=("str" "aa" "aac" "aax" "ac3" "acm" "adf" "adp" "dtk" "ads" "ss2" "adx" "aea" "afc" "aix" "al" "ape" "apl" "mac" "aptx" "aptxhd" "aqt" "ast" "obu" "avi" "avr" "avs" "avs2" "avs3" "bfstm" "bcstm" "binka" "bit" "bitpacked" "bmv" "brstm" "cdg" "cdxl" "xl" "c2" "302" "daud" "dfpwm" "dav" "dss" "dts" "dtshd" "dv" "dif" "cdata" "eac3" "paf" "fap" "flm" "flac" "flv" "fsb" "fwse" "g722" "722" "tco" "rco" "g723_1" "g729" "genh" "gsm" "h261" "h26l" "h264" "264" "avc" "hca" "hevc" "h265" "265" "idf" "ifv" "cgi" "ipu" "sf" "ircam" "ivr" "kux" "669" "amf" "ams" "dbm" "digi" "dmf" "dsm" "dtm" "far" "gdm" "ice" "imf" "it" "j2b" "m15" "mdl" "med" "mmcmp" "mms" "mo3" "mod" "mptm" "mt2" "mtm" "nst" "okt" "plm" "ppm" "psm" "pt36" "sptm" "s3m" "sfx" "sfx2" "st26" "stk" "stm" "stp" "ult" "umx" "wow" "xm" "xpk" "dat" "lvf" "m4v" "mkv" "mk3d" "mka" "mks" "webm" "mca" "mcc" "mjpg" "mjpeg" "mpo" "j2k" "mlp" "mods" "moflex" "mov" "mp4" "m4a" "3gp" "3g2" "mj2" "psp" "m4b" "ism" "ismv" "isma" "f4v" "avif" "mp2" "mp3" "m2a" "mpa" "mpc" "mpl2" "sub" "msf" "mtaf" "ul" "musx" "mvi" "mxg" "v" "nist" "sph" "nsp" "nut" "ogg" "oma" "omg" "aa3" "pjs" "pvf" "yuv" "cif" "qcif" "rgb" "rt" "rsd" "rsd" "rso" "sw" "sb" "smi" "sami" "sbc" "msbc" "sbg" "scc" "sdr2" "sds" "sdx" "ser" "sga" "shn" "vb" "son" "imx" "sln" "stl" "sub" "sub" "sup" "svag" "svs" "tak" "thd" "tta" "ans" "art" "asc" "diz" "ice" "nfo" "vt" "ty" "ty+" "uw" "ub" "v210" "yuv10" "vag" "vc1" "rcv" "viv" "idx" "vpk" "txt" "vqf" "vql" "vqe" "vtt" "wsd" "xmv" "xvag" "yop" "y4m")
+size_comparison=false
+same_extension=false
+all_files_in_source=false
+move_all_files=false
+ffmpeg_supported_extensions=("str" "aa" "aac" "aax" "ac3" "acm" "adf" "adp" "dtk" "ads" "ss2" "adx" "aea" "afc" "aix" "al" "ape" "apl" "mac" "aptx" "aptxhd" "aqt" "ast" "obu" "avi" "avr" "avs" "avs2" "avs3" "bfstm" "bcstm" "binka" "bit" "bitpacked" "bmv" "brstm" "cdg" "cdxl" "xl" "c2" "302" "daud" "dfpwm" "dav" "dss" "dts" "dtshd" "dv" "dif" "cdata" "eac3" "paf" "fap" "flm" "flac" "flv" "fsb" "fwse" "g722" "722" "tco" "rco" "g723_1" "g729" "genh" "gsm" "h261" "h26l" "h264" "264" "avc" "hca" "hevc" "h265" "265" "idf" "ifv" "cgi" "ipu" "sf" "ircam" "ivr" "kux" "669" "amf" "ams" "dbm" "digi" "dmf" "dsm" "dtm" "far" "gdm" "ice" "imf" "it" "j2b" "m15" "mdl" "med" "mmcmp" "mms" "mo3" "mod" "mptm" "mt2" "mtm" "nst" "okt" "plm" "ppm" "psm" "pt36" "sptm" "s3m" "sfx" "sfx2" "st26" "stk" "stm" "stp" "ult" "umx" "wow" "xm" "xpk" "dat" "lvf" "m4v" "mkv" "mk3d" "mka" "mks" "webm" "mca" "mcc" "mjpg" "mjpeg" "mpo" "j2k" "mlp" "mods" "moflex" "mov" "mp4" "m4a" "3gp" "3g2" "mj2" "psp" "m4b" "ism" "ismv" "isma" "f4v" "avif" "mp2" "mp3" "m2a" "mpa" "mpc" "mpl2" "sub" "msf" "mtaf" "ul" "musx" "mvi" "mxg" "v" "nist" "sph" "nsp" "nut" "ogg" "oma" "omg" "aa3" "pjs" "pvf" "yuv" "cif" "qcif" "rgb" "rt" "rsd" "rsd" "rso" "sw" "sb" "smi" "sami" "sbc" "msbc" "sbg" "scc" "sdr2" "sds" "sdx" "ser" "sga" "shn" "vb" "son" "imx" "sln" "stl" "sub" "sub" "sup" "svag" "svs" "tak" "thd" "tta" "ans" "art" "asc" "diz" "ice" "nfo" "vt" "ty" "ty+" "uw" "ub" "v210" "yuv10" "vag" "vc1" "rcv" "viv" "idx" "vpk" "txt" "vqf" "vql" "vqe" "vtt" "wsd" "xmv" "xvag" "yop" "y4m")
 
 while getopts ":hsmi:o:" opt; do
 	case $opt in
-		h)	echo "Usage: $0 [-h] [-s] [-m] [-i args] [-o args] srcExt destExt srcDir destDir"
+		h)	echo "Usage: $0 [-h] [-s] [-m] [-i args] [-o args] src_ext dest_ext src_dir dest_dir"
 			echo ""
 			echo "  -h		show this help text"
 			echo "  -s		compare the size difference of the original and formatted file and delete the larger file"
-			echo "	-m		move all files with the srcExt from the source folder to the destination folder, will only work if -s option is active"
+			echo "  -m		move all files with the src_ext from the source folder to the destination folder, will only work if -s option is active"
 			echo "  -i <args>	The input arguments for ffmpeg"
 			echo "  -o <args>	The output arguments fo ffmpeg"
-			echo "  srcExt	source extension of the targeted files"
-			echo "  destExt	destination extension of the formatted files"
-			echo "  srcDir	source directory"
-			echo "  destDir	destination directory"
+			echo "  src_ext	source extension of the targeted files"
+			echo "  dest_ext	destination extension of the formatted files"
+			echo "  src_dir	source directory"
+			echo "  dest_dir	destination directory"
 			echo ""
 			echo "To use wildcard * as an extension, you either need to escape it \* or use quotes. Using the * wildcard as the output extension, will make the program use the same extension as is in the original file."
 			echo "When exiting the ffmpeg conversion and the -s option is set then use keyboard interrupt (ctrl + c) to stop ffmpeg, since otherwise the script won't recognise that ffmpeg exited prematurely and comparison should not happen."
 			exit 0
 			;;
-		s)	SIZE_COMPARISON=true
+		s)	size_comparison=true
 			;;
-		m)	MOVE_ALL_FILES=true
+		m)	move_all_files=true
 			;;
 		i)	inOpts=$OPTARG
 			;;
@@ -68,52 +61,59 @@ done
 
 shift $((OPTIND - 1))
 
-srcExt=$1 #source extension
-destExt=$2 #destination extension
+src_ext=$1 #source extension
+dest_ext=$2 #destination extension
 
-srcDir=$3 #source directory (path)
-destDir=$4 #destination directory (path)
+src_dir=$3 #source directory (path)
+dest_dir=$4 #destination directory (path)
 
-if [[ $srcExt == "*" ]]; then
-	srcDir="$srcDir""/*"
-	ALL_FILES_IN_SOURCE=true
+if [[ $src_ext == "*" ]]; then
+	src_dir="$src_dir""/*"
+	all_files_in_source=true
 else
-	srcDir="$srcDir""/*.""$srcExt"
+	src_dir="$src_dir""/*.""$src_ext"
 fi
 
-if [[ $destExt == "*" ]]; then
-	SAME_EXTENSION=true
+if [[ $dest_ext == "*" ]]; then
+	same_extension=true
 fi
 
-for filename in $srcDir; do
+for filename in $src_dir; do
 
-	if $ALL_FILES_IN_SOURCE && [[ ! $(echo "${FFMPEG_SUPPORTED_EXTENSIONS[@]}" | grep -Fw "${filename##*.}") ]]; then
+	if $all_files_in_source && [[ ! $(echo "${ffmpeg_supported_extensions[@]}" | grep -Fw "${filename##*.}") ]]; then
 		continue
 	fi
 
-	basePath=${filename%.*}
-	baseName=${basePath##*/}
+	base_path=${filename%.*}
+	base_name=${base_path##*/}
 
-	if $SAME_EXTENSION; then
-		destExt=${filename##*.}
+	if $same_extension; then
+		dest_ext=${filename##*.}
 	fi
 
-	destFilename="$destDir"/"$baseName"."$destExt"
+	dest_filename="$dest_dir"/"$base_name"."$dest_ext"
 
-	ffmpeg $inOpts -i "$filename" $outOpts "$destFilename"
+	ffmpeg $inOpts -i "$filename" $outOpts "$dest_filename"
 
-	if $SIZE_COMPARISON; then
-		srcSize=$(stat -c %s "$filename")
-		destSize=$(stat -c %s "$destFilename")
+	exit_code=$?
+	if [ $exit_code != 0 ]; then
+		echo "Ffmpeg did not exit normally."
+		echo "Exit code: $exit_code"
+		exit 1
+	fi
 
-		if [[ $srcSize -gt $destSize ]]; then
+	if $size_comparison; then
+		src_size=$(stat -c %s "$filename")
+		dest_size=$(stat -c %s "$dest_filename")
+
+		if [[ $src_size -gt $dest_size ]]; then
 			rm "$filename"
 		else
-			rm "$destFilename"
+			rm "$dest_filename"
 		fi
 	fi
 done
 
-if $MOVE_ALL_FILES && $SIZE_COMPARISON; then
-	mv "$srcDir"/*."$srcExt" "$destDir"
+if $move_all_files && $size_comparison; then
+	mv "$src_dir" "$dest_dir"
 fi
