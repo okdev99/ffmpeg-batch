@@ -46,9 +46,9 @@ while getopts ":hsmi:o:" opt; do
 			;;
 		m)	move_all_files=true
 			;;
-		i)	inOpts=$OPTARG
+		i)	in_opts=$OPTARG
 			;;
-		o)	outOpts=$OPTARG
+		o)	out_opts=$OPTARG
 			;;
 		\?)	echo "Invalid option: -$OPTARG" 1>&2
 			exit 1
@@ -93,7 +93,7 @@ for filename in $src_dir; do
 
 	dest_filename="$dest_dir"/"$base_name"."$dest_ext"
 
-	ffmpeg $inOpts -i "$filename" $outOpts "$dest_filename"
+	ffmpeg $in_opts -i "$filename" $out_opts "$dest_filename"
 
 	exit_code=$?
 	if [ $exit_code != 0 ]; then
