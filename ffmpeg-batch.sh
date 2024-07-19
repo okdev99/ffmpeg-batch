@@ -27,7 +27,7 @@ ffmpeg_supported_extensions=("str" "aa" "aac" "aax" "ac3" "acm" "adf" "adp" "dtk
 while getopts ":hsmi:o:" opt; do
 	case $opt in
 		h)	echo "Usage: $0 [-h] [-s] [-m] [-i args] [-o args] src_ext dest_ext src_dir dest_dir"
-			echo ""
+			echo
 			echo "  -h		show this help text"
 			echo "  -s		compare the size difference of the original and formatted file and delete the larger file"
 			echo "  -m		move all files with the src_ext from the source folder to the destination folder, will only work if -s option is active"
@@ -97,7 +97,7 @@ for filename in $src_dir; do
 
 	exit_code=$?
 	if [ $exit_code != 0 ]; then
-		echo "Ffmpeg did not exit normally."
+		echo "ffmpeg did not exit normally. Aborting."
 		echo "Exit code: $exit_code"
 		exit 1
 	fi
@@ -115,5 +115,6 @@ for filename in $src_dir; do
 done
 
 if $move_all_files && $size_comparison; then
-	mv "$src_dir" "$dest_dir"
+	mv $src_dir "$dest_dir"
+	exit 0
 fi
